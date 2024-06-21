@@ -1,8 +1,7 @@
-using ApiCatalogoProdutos.Context;
 using ApiCatalogoProdutos.Dto.Input;
 using ApiCatalogoProdutos.Model;
+using ApiCatalogoProdutos.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ApiCatalogoProdutos.Controllers
 {
@@ -10,92 +9,127 @@ namespace ApiCatalogoProdutos.Controllers
     [Route("api/categorias")]
     public class CategoriasController : ControllerBase
     {
-        private readonly AppDbContext _context;
-
-        public CategoriasController(AppDbContext context)
-        {
-            _context = context;
-        }
-
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromServices] ICategoriaService service)
         {
-            List<Categoria> categorias = await _context.Categorias.ToListAsync();
+            try
+            {
+                List<Categoria> categorias = await service.GetAll();
 
-            if (categorias == null){
-                return NotFound("Nenhuma categoria encontrada");
+                if (categorias == null)
+                {
+                    return NotFound("Nenhuma categoria encontrada");
+                }
+
+                return Ok(categorias);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
 
-            return Ok(categorias);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CategoriaDto input)
+        public async Task<IActionResult> Create(
+            [FromServices] ICategoriaService service,
+            [FromBody] CategoriaDto input)
         {
-            if(input is null){
-                return BadRequest();
+            try
+            {
+                if (input is null)
+                    return BadRequest();
+
+                Categoria categoria = await service.Create(input);
+
+                return CreatedAtAction(nameof(Create), new { id = categoria.CategoriaId }, categoria);
             }
-
-            Categoria categoria = new(input.Nome, input.ImageUrl);
-            await _context.Categorias.AddAsync(categoria);
-            await _context.SaveChangesAsync();
-
-            return Created();
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById(
+            [FromServices] ICategoriaService service,
+            [FromRoute] int id)
         {
-            Categoria? categoria = await _context.Categorias
-                .SingleOrDefaultAsync(c => c.CategoriaId == id);
+            try
+            {
+                Categoria? categoria = await service.GetById(id);
+                if (categoria == null)
+                    return NotFound("Categoria não encontrada");
 
-            if (categoria == null)
-                return NotFound("Categoria não encontrada");
-
-            return Ok(categoria);
+                return Ok(categoria);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Edit([FromRoute] int id, [FromBody] CategoriaDto input)
+        public async Task<IActionResult> Edit(
+            [FromServices] ICategoriaService service,
+            [FromRoute] int id,
+            [FromBody] CategoriaDto input)
         {
-            Categoria? categoria = await _context.Categorias
-                .SingleOrDefaultAsync(c => c.CategoriaId == id);
+            try
+            {
+                Categoria? categoria = await service.Edit(id, input);
 
-            if (categoria == null)
-                return NotFound("Categoria não encontrada");
+                return Ok(categoria);
 
-            categoria.Nome = input.Nome;
-            categoria.ImageUrl = input.ImageUrl;
-            await _context.SaveChangesAsync();
-
-            return Ok(categoria);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound("Categoria não localizada");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpGet("{id:int}/produtos")]
-        public async Task<IActionResult> GetProdutos([FromRoute] int id)
+        public async Task<IActionResult> GetProdutos(
+            [FromServices] ICategoriaService service,
+            [FromRoute] int id)
         {
-            Categoria? categoria = await _context.Categorias
-                .SingleOrDefaultAsync(c => c.CategoriaId == id);
+            try
+            {
+                Categoria? categoria = await service.GetById(id);
 
-            if (categoria == null)
-                return NotFound("Categoria não encontrada");
+                if (categoria == null)
+                    return NotFound("Categoria não encontrada");
 
-            return Ok(categoria.Produtos);
+                return Ok(categoria.Produtos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete(
+            [FromServices] ICategoriaService service,
+            [FromRoute] int id)
         {
-            Categoria? categoria = await _context.Categorias
-                .SingleOrDefaultAsync(c => c.CategoriaId == id);
-
-            if (categoria == null)
-                return NotFound("Categoria não encontrada");
-
-            _context.Categorias.Remove(categoria);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            try
+            {
+                await service.Delete(id);
+                return NoContent();
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound("Categoria não localizada");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
     }
 }

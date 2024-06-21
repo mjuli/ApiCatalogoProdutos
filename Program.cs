@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ApiCatalogoProdutos.Context;
-using Pomelo.EntityFrameworkCore.MySql;
+using ApiCatalogoProdutos.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +15,8 @@ string? mySqlConnection = builder.Configuration.GetConnectionString("MySQLConnec
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection))
 );
+
+builder.Services.AddTransient<ICategoriaService, CategoriaService>();
 
 var app = builder.Build();
 

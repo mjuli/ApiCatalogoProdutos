@@ -102,3 +102,4 @@
 /Users/juliamartins/Desktop/Residencia - TCE/Bloco I/IMD0146 - DESENVOLVIMENTO WEB/ApiCatalogoProdutos/obj/Debug/net8.0/ref/ApiCatalogoProdutos.dll
 /Users/juliamartins/Desktop/Residencia - TCE/Bloco I/IMD0146 - DESENVOLVIMENTO WEB/ApiCatalogoProdutos/bin/Debug/net8.0/MySqlConnector.dll
 /Users/juliamartins/Desktop/Residencia - TCE/Bloco I/IMD0146 - DESENVOLVIMENTO WEB/ApiCatalogoProdutos/bin/Debug/net8.0/Pomelo.EntityFrameworkCore.MySql.dll
+/Users/juliamartins/Desktop/Residencia - TCE/Bloco I/IMD0146 - DESENVOLVIMENTO WEB/ApiCatalogoProdutos/obj/Debug/net8.0/ApiCatalogoProdutos.sourcelink.json
