@@ -17,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 builder.Services.AddTransient<ICategoriaService, CategoriaService>();
+builder.Services.AddTransient<IProdutoService, ProdutoService>();
 
 var app = builder.Build();
 
