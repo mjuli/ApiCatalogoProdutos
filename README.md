@@ -19,6 +19,41 @@ Este repositório contém uma API para o catálogo de produtos, que permite a cr
 - **Excluir Produto**: Remova um produto do catálogo.
 - **Buscar Produto**: Obtenha os detalhes de um produto específico.
 
+## Tecnologias Utilizadas
+
+- **Linguagem de Programação**: C# 
+- **Framework**: .NET Core
+- **Banco de Dados**: MySql
+- **ORM**: Entity Framework Core
+- **Outras tecnologias**: Swagger para documentação da API
+
+## Instalação
+
+Para executar este projeto localmente, siga os passos abaixo:
+
+1. Clone o repositório:
+    ```sh
+    git clone https://github.com/mjuli/ApiCatalogoProdutos.git
+    cd ApiCatalogoProdutos
+    ```
+
+2. Configure o banco de dados:
+    - Crie um banco de dados MySql.
+    - Atualize a string de conexão no arquivo `appsettings.json` com as credenciais do seu banco de dados.
+
+3. Instale as dependências e atualize o banco de dados:
+    ```sh
+    dotnet restore
+    dotnet ef database update
+    ```
+
+4. Execute a aplicação:
+    ```sh
+    dotnet run
+    ```
+
+A aplicação estará disponível em `http://localhost:5267`.
+
 ## Endpoints
 
 - GET /produtos
